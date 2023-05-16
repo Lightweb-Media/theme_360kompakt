@@ -37,7 +37,6 @@ get_header(); ?>
                     <div class="author-avatar">
                         <img alt="<?php _e("Autorenfoto", "KOMPAKT"); ?>" title="<?php _e("Autorenfoto", "KOMPAKT"); ?>" src="<?php echo get_avatar_url($author_id); ?>"/>
 
-                  
                     </div>
                     <div class="author-info">
                         <?php echo get_the_author_meta("description", $author_id); ?>

@@ -298,6 +298,21 @@ body.single-post .author-info {
   padding: 7px 10px 5px;
 }
 
+/* WP Forms 7 contact form overwrites */
+input[type=text],
+input[type=email],
+#your-message {
+  background-color: --white;
+  color: #000;
+  width: 100%;
+}
+
+.wcf7 {
+  background-color: #EFEFEF; /* TODO Define variable color from customizer?*/
+  padding: 20px;
+}
+
+/* Footer styles */
 .site-footer .footer-widgets .inside-footer-widgets hr {
   max-width: 30px;
   margin: 0px;
@@ -346,10 +361,10 @@ body.single-post .author-info {
 }
 
 /* Post Single */
-body.single-post h1.entry-title {
+body.single-post article .inside-article h1.entry-title {
   text-align: center;
 }
-body.single-post h1.entry-title::after {
+body.single-post article .inside-article h1.entry-title::after {
   display: block;
   height: 2px;
   background: var(--accent-2);
@@ -357,8 +372,18 @@ body.single-post h1.entry-title::after {
   content: " ";
   margin: 9px auto 20px auto;
 }
-body.single-post .featured-image {
+body.single-post article .inside-article .featured-image {
   margin-bottom: 25px !important;
+}
+body.single-post article .inside-article .entry-content p > a,
+body.single-post article .inside-article .entry-content ul > li,
+body.single-post article .inside-article .entry-content .lwptoc_item {
+  margin-bottom: 0.7rem;
+}
+@media (max-width: 770px) {
+  body.single-post article .inside-article .entry-content ol {
+    margin: 0 0;
+  }
 }
 
 /* Add ".." after excerpt */
@@ -410,7 +435,7 @@ body.author .author_bio_section .author-info {
   text-transform: uppercase;
   font-size: 0.75rem;
   letter-spacing: 0.82px;
-  color: #8E9BAA;
+  color: #51596C; /* $category-name-color*/
   margin-bottom: 15px;
   display: block;
 }
@@ -439,7 +464,7 @@ body.author .author_bio_section .author-info {
   border-bottom-right-radius: 0px;
 }
 .posts-list article .inside-article {
-  padding: 15px 20px 20px 20px;
+  padding: 15px 30px 30px 30px;
 }
 .posts-list article .inside-article span.category-list {
   font-size: 0.6em;
@@ -495,8 +520,8 @@ section.featured {
 }
 @media (max-width: 770px) {
   section.featured {
-    padding-left: 30px;
-    padding-right: 30px;
+    padding-left: 24px;
+    padding-right: 24px;
   }
 }
 

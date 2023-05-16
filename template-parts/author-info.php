@@ -1,6 +1,4 @@
- <?php
-
-    $link = !is_archive();
+<?php
     $args = wp_parse_args(
         $args,
         array(
@@ -12,8 +10,6 @@
     $author_name = get_the_author_meta('display_name', $author_id);
     ?>
  <div class="author-info">
-
-    
 
          <img alt="<?php echo sprintf(__('Autorenfoto von %s', 'kompakt'), $author_name) ?>" title="<?php echo sprintf(__('Autorenfoto von %s', 'kompakt'), $author_name) ?>" src="<?php echo get_avatar_url($author_id) ?>" />
         <span>
@@ -30,6 +26,7 @@
                     echo '</a>';
                 }
     ?>
+
         </span>
 
  </div>
