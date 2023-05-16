@@ -246,4 +246,17 @@ add_action( 'generate_after_content', function() {
           }
  }, 20);
 
+ function add_canonical_link() {
+
+    if ( is_paged() ) {
+       $canonical_url = '';
+      
+       if ( get_query_var( 'paged' ) > 1 ) {
+          $canonical_url = get_pagenum_link( 1 );
+       } 
+       echo '<link rel="canonical" href="'. $canonical_url .'">';
+    }
+ }
+ add_action( 'wp_head', 'add_canonical_link' );
+ add_filter( 'wpseo_canonical', '__return_false' );
  
