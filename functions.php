@@ -15,7 +15,7 @@ KOMPAKT ==  360Kompakt
 
 define( 'KOMPAKT_THEME_URL', get_stylesheet_directory_uri() );
 define( 'KOMPAKT_THEME_PATH', get_stylesheet_directory() );
-define( 'KOMPAKT_VERSION', '1.0.0' );
+define( 'KOMPAKT_VERSION', '1.0.3' );
 
 function kompakt_enqueue_child_theme_styles() {
     wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
@@ -56,7 +56,7 @@ require_once KOMPAKT_THEME_PATH . '/shortcodes.php';
 add_filter( 'generate_404_title','generate_custom_404_title' );
 function generate_custom_404_title()
 {
-    return __('<center>Nichts gefunden</center>', 'kompakt');
+    return '<center>'.__('Nichts gefunden', 'kompakt').'</center>';
 }
 
 
@@ -64,7 +64,7 @@ function generate_custom_404_title()
 add_filter( 'generate_404_text','generate_custom_404_text' );
 function generate_custom_404_text()
 {
-    return __('<center>Haben Sie sich verirrt? Nutzen Sie unsere Suche oder klicken Sie auf einen unserer neuesten Beiträge.</center>', 'kompakt');
+    return '<center>'.__('Haben Sie sich verirrt? Nutzen Sie unsere Suche oder klicken Sie auf einen unserer neuesten Beiträge.', 'kompakt').'</center>';
 }
 
 
@@ -85,20 +85,16 @@ function show_author_box(){
     
     // Check if is not 404 Page
     if(!is_404() && is_single()){
-    ?>
-<div class="author-box">
+    ?> <div class="author-box">
     <div class="author-box-avatar">
         <img alt=<?php _e("Autorenfoto", "kompakt"); ?> title=<?php _e("Autorenfoto", "kompakt"); ?>
             src=<?php echo get_avatar_url($author_id); ?> />
     </div>
     <div class="author-box-meta">
         <div class="author-box_name"><?php echo '<span>'. get_the_author() . '</span>'; ?></div>
-        <div class="author-box_bio">
-            <?php echo get_the_author_meta("description", $author_id); ?>
-        </div>
+        <div class="author-box_bio"> <?php echo get_the_author_meta("description", $author_id); ?> </div>
     </div>
-</div>
-<?php 
+</div> <?php 
     }
 }
 
@@ -107,15 +103,11 @@ add_action('generate_after_content', 'show_author_box', 10);
 // Headline on home page 
 add_action( 'generate_before_main_content', function() {
 	if ( is_front_page() && is_home() ) {
-	?>
-
-<div class="home-headline">
+	?> <div class="home-headline">
     <div class="wp-block-group__inner-container">
         <h2><?php _e('Aktuelle Beiträge', 'kompakt'); ?></h2>
-
     </div>
-</div>
-<?php
+</div> <?php
 	}
 } );
 
@@ -139,6 +131,7 @@ add_action( 'generate_after_header', function() {
 
             ?> <section class="posts-list featured"> <?php
 
+
             if($featuredPosts->have_posts()){
             while ($featuredPosts->have_posts()) : $featuredPosts->the_post();
                 get_template_part('template-parts/custom-post-loop');
@@ -148,14 +141,14 @@ add_action( 'generate_after_header', function() {
 
             ?> <section class="posts-list featured"> 
             <?php
+
             if($featuredPosts->have_posts()){
             while ($featuredPosts->have_posts()) : $featuredPosts->the_post();
                 get_template_part('template-parts/custom-post-loop');
             endwhile;
             
             }
-        ?>
-</section> <?php
+        ?> </section> <?php
     }
 }
 });
@@ -180,29 +173,23 @@ function show_all_categories_of_post(){
 // Add custom user meta fields
 function add_custom_user_profile_fields($user) {
 	wp_enqueue_media();
-    ?>
-<h3><?php _e('Profile Picture', 'kompakt'); ?></h3>
+    ?> <h3><?php _e('Profile Picture', 'kompakt'); ?></h3>
 <table class="form-table">
     <tr>
         <th><label for="profile_picture"><?php _e('Please upload your profile picture.', 'kompakt'); ?></label></th>
-        <td>
-
-            <?php
+        <td> <?php
                 $profile_picture = get_the_author_meta('profile_picture', $user->ID);
                 if (!empty($profile_picture)) {
                
                     echo '<img src="' . esc_url($profile_picture) . '" width="100" /><br />';
                 }
-                ?>
-            <input type="text" style="display:none;" name="profile_picture" id="profile_picture"
+                ?> <input type="text" style="display:none;" name="profile_picture" id="profile_picture"
                 value="<?php echo esc_attr($profile_picture); ?>" class="regular-text" /><br />
             <input type="button" class="button" value="<?php _e('Upload Image', 'kompakt'); ?>"
                 id="upload_profile_picture_button" />
-
         </td>
     </tr>
-</table>
-<?php
+</table> <?php
 }
 add_action('show_user_profile', 'add_custom_user_profile_fields');
 add_action('edit_user_profile', 'add_custom_user_profile_fields');
@@ -310,7 +297,8 @@ add_action( 'generate_after_content', function() {
 
     $featuredPosts = new WP_Query($args);
     if($featuredPosts->have_posts() && is_single()){
-    ?>
+
+    ?> 
 
 
     <h3 class="recommended-headline">
@@ -322,13 +310,29 @@ add_action( 'generate_after_content', function() {
 <section class="posts-list recommended">
     <?php
 
+
             while ($featuredPosts->have_posts()) : $featuredPosts->the_post();
 
                 get_template_part('template-parts/custom-post-loop');
             
             endwhile;
             
-    ?>
-</section> <?php
+    ?> </section> <?php
           }
  }, 20);
+
+
+ function add_canonical_link() {
+
+    if ( is_paged() ) {
+       $canonical_url = '';
+      
+       if ( get_query_var( 'paged' ) > 1 ) {
+          $canonical_url = get_pagenum_link( 1 );
+       } 
+       echo '<link rel="canonical" href="'. $canonical_url .'">';
+    }
+ }
+ add_action( 'wp_head', 'add_canonical_link' );
+ add_filter( 'wpseo_canonical', '__return_false' );
+
