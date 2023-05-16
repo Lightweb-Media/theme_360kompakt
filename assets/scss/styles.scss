@@ -42,15 +42,11 @@ img {
     flex-wrap: wrap;
 
     span{
-        display: flex;
-        align-items: center;
+        display: inline-block;
     }
 
     a {
         text-decoration: none;
-        display: flex;
-        align-items: center;
-        margin-left: 5px;
     }
             
     img {

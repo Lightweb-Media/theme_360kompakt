@@ -7,12 +7,15 @@
  */
 /* 
 
+
 KOMPAKT ==  360Kompakt
+
+
 */
 
 define( 'KOMPAKT_THEME_URL', get_stylesheet_directory_uri() );
 define( 'KOMPAKT_THEME_PATH', get_stylesheet_directory() );
-define( 'KOMPAKT_VERSION', '1.0.0' );
+define( 'KOMPAKT_VERSION', '1.0.3' );
 
 function kompakt_enqueue_child_theme_styles() {
     wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
@@ -24,11 +27,7 @@ add_action( 'wp_enqueue_scripts', 'kompakt_enqueue_child_theme_styles' );
 function backend_assets() {
 	wp_enqueue_script( 
         'kompakt-be-js', 
-        KOMPAKT_THEME_URL . '/build/backend.js', 
-        ['wp-block-editor', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-api', 'wp-polyfill','media-upload', 'thickbox'],
-        filemtime( KOMPAKT_THEME_PATH . '/build/backend.js' ), 
-        true 
-    );
+        KOMPAKT_THEME_URL . '/build/backend.js', ['wp-block-editor', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-api', 'wp-polyfill','media-upload', 'thickbox'],filemtime( KOMPAKT_THEME_PATH . '/build/backend.js' ),  true );
 }
 add_action('admin_enqueue_scripts', 'backend_assets');
 
@@ -118,6 +117,7 @@ add_action( 'generate_after_header', function() {
     if ( is_front_page() && is_home() ) {
         $sticky = get_option('sticky_posts');
 
+
         if (!empty($sticky)) {
             $args = array(
                 'post__in' => $sticky,
@@ -125,9 +125,23 @@ add_action( 'generate_after_header', function() {
                 'ignore_sticky_posts' => 1
             );
 
+
+            
             $featuredPosts = new WP_Query($args);
 
             ?> <section class="posts-list featured"> <?php
+
+
+            if($featuredPosts->have_posts()){
+            while ($featuredPosts->have_posts()) : $featuredPosts->the_post();
+                get_template_part('template-parts/custom-post-loop');
+            endwhile;
+            }
+
+
+            ?> <section class="posts-list featured"> 
+            <?php
+
             if($featuredPosts->have_posts()){
             while ($featuredPosts->have_posts()) : $featuredPosts->the_post();
                 get_template_part('template-parts/custom-post-loop');
@@ -139,15 +153,6 @@ add_action( 'generate_after_header', function() {
 }
 });
 
-function target_main_category_query_with_conditional_tags( $query ) {
-	if ( ! is_admin() && $query->is_main_query() ) {
-		if ( is_home() ) {
-            $sticky = get_option('sticky_posts');
-			$query->set('post__not_in', $sticky);
-		}
-	}
-}
-add_action( 'pre_get_posts', 'target_main_category_query_with_conditional_tags' );
 
 /* Get categories of Post
 Output (string): "Cat1, Cat2"
@@ -211,6 +216,65 @@ function modify_get_avatar_url_defaults($url, $id) {
 // add the filter
 add_filter( "get_avatar_url", "modify_get_avatar_url_defaults", 10, 3 );
 
+
+
+/**
+*
+* Add custom user profile information
+*
+*/
+// Add custom user meta fields
+function add_custom_user_profile_fields($user) {
+	wp_enqueue_media();
+    ?>
+<h3><?php _e('Profile Picture', 'kompakt'); ?></h3>
+<table class="form-table">
+    <tr>
+        <th><label for="profile_picture"><?php _e('Please upload your profile picture.', 'kompakt'); ?></label></th>
+        <td>
+
+            <?php
+                $profile_picture = get_the_author_meta('profile_picture', $user->ID);
+                if (!empty($profile_picture)) {
+               
+                    echo '<img src="' . esc_url($profile_picture) . '" width="100" /><br />';
+                }
+                ?>
+            <input type="text" style="display:none;" name="profile_picture" id="profile_picture"
+                value="<?php echo esc_attr($profile_picture); ?>" class="regular-text" /><br />
+            <input type="button" class="button" value="<?php _e('Upload Image', 'kompakt'); ?>"
+                id="upload_profile_picture_button" />
+
+        </td>
+    </tr>
+</table>
+<?php
+}
+add_action('show_user_profile', 'add_custom_user_profile_fields');
+add_action('edit_user_profile', 'add_custom_user_profile_fields');
+
+
+// Save custom user meta fields
+function save_custom_user_profile_fields($user_id) {
+    if (!current_user_can('edit_user', $user_id)) {
+        return false;
+    }
+    update_user_meta($user_id, 'profile_picture', $_POST['profile_picture']);
+}
+add_action('personal_options_update', 'save_custom_user_profile_fields');
+add_action('edit_user_profile_update', 'save_custom_user_profile_fields');
+
+function modify_get_avatar_url_defaults($url, $id) { 
+
+    if(get_the_author_meta('profile_picture', $id)){
+     return get_the_author_meta('profile_picture', $id);   
+    }
+  
+    return $url; 
+}
+// add the filter
+add_filter( "get_avatar_url", "modify_get_avatar_url_defaults", 10, 3 );
+
 // Recommended posts on post single
 add_action( 'generate_after_content', function() {
 
@@ -233,8 +297,19 @@ add_action( 'generate_after_content', function() {
 
     $featuredPosts = new WP_Query($args);
     if($featuredPosts->have_posts() && is_single()){
-    ?> <h3 class="recommended-headline"> <?php _e('Weitere Beiträge dieser Kategorie', 'kompakt'); ?> </h3>
-<section class="posts-list recommended"> <?php
+
+    ?> 
+
+
+    <h3 class="recommended-headline">
+        <?php _e('Weitere Beiträge dieser Kategorie', 'kompakt'); ?>
+    </h3>
+
+
+
+<section class="posts-list recommended">
+    <?php
+
 
             while ($featuredPosts->have_posts()) : $featuredPosts->the_post();
 
@@ -245,6 +320,7 @@ add_action( 'generate_after_content', function() {
     ?> </section> <?php
           }
  }, 20);
+
 
  function add_canonical_link() {
 
@@ -259,4 +335,4 @@ add_action( 'generate_after_content', function() {
  }
  add_action( 'wp_head', 'add_canonical_link' );
  add_filter( 'wpseo_canonical', '__return_false' );
- 
+
