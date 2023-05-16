@@ -106,5 +106,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		
 		?>
         <div class="read-more"><a href="<?php the_permalink(); ?>" title="Weiterlesen"><?php _e("Weiterlesen >", "kompakt") ?></a></div>
+
+
 	</div>
 </article>

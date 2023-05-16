@@ -35,7 +35,6 @@ get_header(); ?>
                         <h1><?php echo '<span>'. get_the_author() . '</span>'; ?></h1>
                     </span>
                     <div class="author-avatar">
-
                         <img alt="<?php _e("Autorenfoto", "KOMPAKT"); ?>" title="<?php _e("Autorenfoto", "KOMPAKT"); ?>" src="<?php echo get_avatar_url($author_id); ?>"/>
 
                     </div>
