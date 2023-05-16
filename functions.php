@@ -7,7 +7,7 @@
  */
 /* 
 
-KOMPAKT ==  360Kompakt
+KOMPAKT ==  360Kompakt 
 */
 
 define( 'KOMPAKT_THEME_URL', get_stylesheet_directory_uri() );
